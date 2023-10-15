@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="refresh" content="60;url=one.html"> <!-- 60秒後にindex.htmlにリダイレクト -->
+    <script>
+        var countdownTimer; // カウントダウンタイマーを格納する変数
+        var audioElement; // オーディオ要素を格納する変数
+    
+        // カウントダウン用の関数
+        function countdown() {
+            var seconds = 60; // カウントダウンの秒数
+            countdownTimer = setInterval(function() {
+                document.getElementById('timer').textContent = seconds + ' 秒後に次のページに移動します';
+                seconds--;
+    
+                if (seconds === 20) {
+                    // 40秒経過後にフォームへの入力が無かった場合に音声を再生
+                    checkInputAndPlayAudio('audio/notform.mp3');
+                }
+    
+                if (seconds === 0) {
+                    clearInterval(countdownTimer);
+                }
+            }, 1000);
+        }
+    
+        function checkInputAndPlayAudio(audioSrc) {
+            var userInputField4 = document.getElementById('userInput4'); // IDを 'userInput4' に変更
+            var userInput4 = userInputField4.value;
+        
+            if (userInput4.trim() === '') {
+                if (audioElement) {
+                    audioElement.pause(); // 既存のオーディオを停止
+                }
+                playAudioLoop(audioSrc); // フォームへの入力が無い場合の音声再生
+            }
+        }
+        
+    
+        function playAudioLoop(audioSrc) {
+            if (audioElement) {
+                audioElement.pause(); // 既存のオーディオを停止
+            }
+            audioElement = new Audio(audioSrc);
+            audioElement.loop = true;
+            audioElement.play();
+        }
+    
+        window.onload = function() {
+            countdown(); // カウントダウンを開始
+            setTimeout(function() {
+                playAudioLoop('audio/nonn.mp3'); // 1秒後にフォームへの入力がある場合の音声をループ再生
+            }, 1000);
+        };
+    </script>
+</head>
+<style>
+    /* フォームのスタイルを設定 */
+    #userInput4 {
+        width: 100%;
+        padding: 5px;
+    }
+
+    #userInput4::placeholder {
+        white-space: nowrap; /* プレースホルダーテキストの折り返しを無効にする */
+    }
+
+    /* フォームの高さを自動調整 */
+    #userInputForm4 {
+        display: inline-block;
+    }
+</style>
+</head>
+<body>
+
+    <h1>Goal Set</h1>
+    
+    <div id="userInputDisplay"></div>
+    <div id="userInputDisplay1"></div>
+    <div id="userInputDisplay2"></div>
+    <div id="userInputDisplay3"></div>
+    <div id="timer"></div>
+    <form id="userInputForm4">
+      <label for="userInput4"></label>
+      <span id="dateDisplay"></span>
+      <input type="text" id="userInput4" name="userInput4" placeholder="例:テーブルの物を1つ捨てる" autocomplete="off">
+  </form>
+  <script>
+    // 7時間後の日付と曜日を計算する関数
+    function calculateDate() {
+      const today = new Date();
+      const sevenHoursLater = new Date(today);
+      sevenHoursLater.setTime(today.getTime() + 4 * 60 * 60 * 1000); // 7時間後のミリ秒数を加算
+  
+      const options = { year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric', weekday: 'long' };
+      const formattedDate = sevenHoursLater.toLocaleDateString('ja-JP', options);
+  
+      // 日付と曜日を表示する要素にセット
+      document.getElementById('dateDisplay').textContent = `${formattedDate}までの結果目標`;
+    }
+  
+    // ページ読み込み時に日付と曜日を計算して表示
+    calculateDate();
+  </script>
+  
+<script>
+  // セッションストレージから入力内容を取得
+  const userInput = sessionStorage.getItem('userInput');
+  const userInputDisplay = document.getElementById('userInputDisplay');
+  
+  if (userInput) {
+      userInputDisplay.textContent = `状態目標：${userInput}`;
+  } else {
+      userInputDisplay.textContent = "ユーザーのありたい姿はありませんでした";
+  }
+</script>
+<script>
+  // セッションストレージから入力内容を取得
+  const userInput1 = sessionStorage.getItem('userInput1');
+  const userInputDisplay1 = document.getElementById('userInputDisplay1');
+  
+  if (userInput1) {
+      userInputDisplay1.textContent = `168時間後の結果目標: ${userInput1}`;
+  } else {
+      userInputDisplay1.textContent = "1週間後の結果目標は思いつかなかったようです";
+  }
+</script>
+<script>
+// セッションストレージから入力内容を取得
+const userInput2 = sessionStorage.getItem('userInput2');
+const userInputDisplay2 = document.getElementById('userInputDisplay2');
+
+if (userInput2) {
+    userInputDisplay2.textContent = `1日後の結果目標: ${userInput2}`;
+} else {
+    userInputDisplay2.textContent = "1週間後の結果目標は思いつかなかったようです";
+}
+</script>
+<script>
+  // セッションストレージから入力内容を取得
+  const userInput3 = sessionStorage.getItem('userInput3');
+  const userInputDisplay3 = document.getElementById('userInputDisplay3');
+  
+  if (userInput3) {
+      userInputDisplay3.textContent = `7時間後の結果目標: ${userInput3}`;
+  } else {
+      userInputDisplay3.textContent = "7時間後の結果目標は思いつかなかったようです";
+  }
+</script>
+<script>
+  const userInputField4 = document.getElementById('userInput4');
+  const userInputForm4 = document.getElementById('userInputForm4');
+  
+  // テキストが変更されるたびに入力内容をセッションストレージに保存する関数
+  function saveUserInput4() {
+      const userInput4 = userInputField4.value;
+      sessionStorage.setItem('userInput4', userInput4);
+  }
+  
+  // ページが読み込まれたときにセッションストレージから保存された入力内容を取得して表示
+  window.addEventListener('DOMContentLoaded', function() {
+      const userInput4 = sessionStorage.getItem('userInput4');
+      if (userInput4) {
+          userInputField4.value = userInput4;
+      }
+  });
+  
+  // テキストが変更されたら自動的に保存
+  userInputField4.addEventListener('input', saveUserInput4);
+</script>
+  
+</body>
+</html>
