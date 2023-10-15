@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="refresh" content="60;url=week.html"> <!-- 60秒後にnext_page.htmlにリダイレクト -->
+    <script>
+        var countdownTimer; // カウントダウンタイマーを格納する変数
+        var audioElement; // オーディオ要素を格納する変数
+    
+        // カウントダウン用の関数
+        function countdown() {
+            var seconds = 60; // カウントダウンの秒数
+            countdownTimer = setInterval(function() {
+                document.getElementById('timer').textContent = seconds + ' 秒後に次のページに移動します';
+                seconds--;
+    
+                if (seconds === 20) {
+                    // 40秒経過後にフォームへの入力が無かった場合に音声を再生
+                    checkInputAndPlayAudio('audio/notform.mp3');
+                }
+    
+                if (seconds === 0) {
+                    clearInterval(countdownTimer);
+                }
+            }, 1000);
+        }
+    
+        function checkInputAndPlayAudio(audioSrc) {
+            var userInputField = document.getElementById('userInput');
+            var userInput = userInputField.value;
+    
+            if (userInput.trim() === '') {
+                if (audioElement) {
+                    audioElement.pause(); // 既存のオーディオを停止
+                }
+                playAudioLoop(audioSrc); // フォームへの入力が無い場合の音声再生
+            }
+        }
+    
+        function playAudioLoop(audioSrc) {
+            if (audioElement) {
+                audioElement.pause(); // 既存のオーディオを停止
+            }
+            audioElement = new Audio(audioSrc);
+            audioElement.loop = true;
+            audioElement.play();
+        }
+    
+        window.onload = function() {
+            countdown(); // カウントダウンを開始
+            setTimeout(function() {
+                playAudioLoop('audio/nonn.mp3'); // 1秒後にフォームへの入力がある場合の音声をループ再生
+            }, 1000);
+        };
+    </script>
+</head>
+<style>
+    /* フォームのスタイルを設定 */
+    #userInput {
+        width: 100%;
+        padding: 5px;
+    }
+
+    #userInput::placeholder {
+        white-space: nowrap; /* プレースホルダーテキストの折り返しを無効にする */
+    }
+
+    /* フォームの高さを自動調整 */
+    #userInputForm {
+        display: inline-block;
+    }
+</style>
+
+<body>
+    <!-- カウントダウン表示 -->
+    <div id="timer"></div>
+    <!-- ここにページのコンテンツを追加 -->
+    <form id="userInputForm">
+      <label for="userInput">状態目標</label>
+      <input type="text" id="userInput" name="userInput" placeholder="例:すっきりとした部屋で過ごす" autocomplete="off">
+    </form>
+    
+  
+  <script>
+    const userInputField = document.getElementById('userInput');
+    const userInputForm = document.getElementById('userInputForm');
+    
+    // テキストが変更されるたびに入力内容をセッションストレージに保存する関数
+    function saveUserInput() {
+        const userInput = userInputField.value;
+        sessionStorage.setItem('userInput', userInput);
+    }
+    
+    // フォームの送信を防止
+    userInputForm.addEventListener('submit', function(event) {
+        event.preventDefault();
+        saveUserInput();
+        // ページ遷移など、必要な処理を実行
+        window.location.href = 'index.html';
+    });
+    
+    // ページが読み込まれたときにセッションストレージから保存された入力内容を取得して表示
+    window.addEventListener('DOMContentLoaded', function() {
+        const userInput = sessionStorage.getItem('userInput');
+        if (userInput) {
+            userInputField.value = userInput;
+        }
+    });
+    
+    // テキストが変更されたら自動的に保存
+    userInputField.addEventListener('input', saveUserInput);
+</script>
+</body>
+</html>
